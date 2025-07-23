@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A4縦書き15文字メモ</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="media.css">
+  
+</head>
+
+<body>
+
+  <div id="fileModalOverlay" class="modal-overlay no-select">
+     <div class="modal-content">
+     <span class="modal-close-button" id="fileModalClose">&times;</span>
+     <h2 id="modalTitle" class="no-select">ファイル名を入力してください</h2>
+     <input type="text" id="fileNameInput" placeholder="ファイル名">
+     <button id="modalActionButton" class="no-select">保存</button>
+     <p id="modalMessage" class="no-select" style="color: red; display: none;">右上からGoogleアカウントでログインしてください</p> </div>
+  </div>
+
+
+<div id="body-2">
+    <header class="main-header-container">
+      
+      <div class="header-1" >
+        <!--トグルボタン-->
+        <div class="left-group">
+          <div class="togle-container">
+            <label class="toggle-switch">
+            <input type="checkbox" id="driveConnectSwitch"><!--korega-->
+            <span class="slider"></span>
+            </label>
+            <span id="driveStatusText" class="drive-status-text" data-on="GoogleDrive連携済み" data-off="GoogleDrive未連携">GooleDrive未連携</span>
+          </div>
+        </div>
+        <!--中央のタイトルなど-->
+        <div class="center-position">
+          <p class="app-title">Manga Serif Manager</p>
+
+          <div class="editing-file-info">
+            <span id="editingFileName">『無題のファイル』</span>
+            <span id="saveStatus"></span>
+          </div>
+        </div>
+        <!--ログインボタンとアイコン表示場所-->
+        <div class="right-group">
+          <div id="googleLoginButton">
+            <div id="g_id_onload"
+            data-client_id="95542228537-pnnjojb0i28mvjc4l3srgpmjnbkt0f71.apps.googleusercontent.com"
+            data-callback="GoogleCredentialResponse"
+            data-auto_prompt="true">
+            </div>
+
+            <div class="g_id_signin"
+              data-type="standard"
+              data-size="medium"
+              data-theme="outline"
+              data-text="sign_in_with"
+              data-shape="rectangular"
+              data-use_fedcm_for_prompt="false"
+              data-logo_alignment="left">
+            </div>
+          </div>
+             
+          <div id="userIcon" ></div>
+        </div>
+      </div>
+
+      <div class="header-2">
+          <!--操作ボタン-->
+          <div class="header-controls">
+            <div id="saveButton" class="toolbar-item">
+              <button >新規/別名保存</button>
+            </div>
+            <div id="Uwagakisave" class="toolbar-item">
+              <button >上書き</button>
+            </div>
+            <div id="loadButton" class="toolbar-item">
+              <button >読込</button>
+            </div>
+            <div id="addButton" class="toolbar-item">
+              <button >追加</button>
+            </div>
+            <div id="removeButton" class="toolbar-item">
+              <button >削除</button>
+            </div>
+          </div>
+
+          <!--三点ボタン-->
+          
+            <div class="options-button">
+                <button class="options-button" title="メニュー">
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </button>
+            </div>
+          
+      </div>
+
+     
+    </header>
+
+
+      
+    <div class="a4-page">
+      <input type="text" id="titleInput" class="title-input" placeholder="作品タイトルを入力…">
+      <div class="vertical-block">
+        <p>1p</p>
+        <textarea class="vertical-text" placeholder="セリフを入力…"></textarea>
+        <textarea class="title-text" placeholder="シーンを入力…"></textarea>
+      </div>
+      <div class="vertical-block">
+        <p>2p</p>
+        <textarea class="vertical-text" placeholder="セリフを入力…"></textarea>
+        <textarea class="title-text" placeholder="シーンを入力…"></textarea>
+      </div>
+      <div class="vertical-block">
+        <p>3p</p>
+        <textarea class="vertical-text" placeholder="セリフを入力…"></textarea>
+        <textarea class="title-text" placeholder="シーンを入力…"></textarea>
+      </div>
+      <div class="vertical-block">
+        <p>4p</p>
+        <textarea class="vertical-text" placeholder="セリフを入力…"></textarea>
+        <textarea class="title-text" placeholder="シーンを入力…"></textarea>
+      </div>
+      
+    </div> 
+
+    
+</div>
+
+  <div id="loadModalOverlay" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <span class="modal-close-button" id="loadModalCloseButton">&times;</span>
+
+        <div class="modal-header">
+          <h2 class="no-select">ファイル一覧</h2>
+          <div class="view-toggle-buttons">
+            <button id="listViewButton" class="active" title="リスト表示">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3,4H21V6H3V4ZM3,9H21V11H3V9ZM3,14H21V16H3V14ZM3,19H21V21H3V19Z"></path></svg>
+            </button>
+            <button id="gridViewButton" title="グリッド表示">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3,3H11V11H3V3M13,3H21V11H13V3M3,13H11V21H3V13M13,13H21V21H13V13Z"></path></svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="driveFileListContainer" class="view-list no-select" style="max-height: 400px; overflow-y: auto; margin-top:15px; border-top:1px solid #eee; padding-top:15px;">
+            <p>（ここにファイルが表示されます）</p>
+        </div>
+    </div>
+</div>
+
+<div id="menueContainer" class="context-menu">
+  <ul class="context-menu-list">
+    <li class="context-menu-item" id="menuRename">
+      <span class="context-menu-icon">✏️</span>
+      <span  class="context-menu-text no-select">名前を変更</span>
+    </li>
+    <li class="context-menu-item" id="menuDelete">
+      <span class="context-menu-icon no-select">🗑️</span>
+      <span class="context-menu-text no-select">削除</span>
+    </li>
+  </ul>
+</div>
+
+<div id="loadingOverlay" class="loading-overlay">
+  <div class="spinner"></div>
+  <p id="loadingStatusText" class="loading-text">処理中です...</p>
+</div>
+ 
+  <script src="script.js"></script>
+  <script  src="https://apis.google.com/js/api.js" onload="handleGapiLoad()"></script>
+  <script src="https://accounts.google.com/gsi/client" onload="gisLoaded()" ></script>
+
+</body>
+</html>
