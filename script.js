@@ -969,6 +969,40 @@ restoreFromAutoSave();
 //読み込み時の操作ボタンオフ
 updateFileOperationButtons(false);
 
- OptionButton.addEventListener('click',()=>{
-  alert('現在このボタンは使えません。今後内容を追加する予定です。');
+const mainMenue =document.getElementById("mainmenue");
+ OptionButton.addEventListener('click',(event)=>{
+  showMainMenu(event);
  });
+
+mainMenue.addEventListener('click', (event) => {
+  if (event.target === mainMenue) {
+    mainMenue.style.display = "none";
+  }
+});
+
+function showMainMenu(event) {
+  const mainMenue = document.getElementById("mainmenue");
+  const menueNakami = mainMenue.querySelector(".mainmenue-nakami");
+
+
+  mainMenue.style.display = "block";
+
+  const mainMenueWidth = menueNakami.offsetWidth;   
+  const mainMenueHeight = menueNakami.offsetHeight; 
+  const windowWidth = window.innerWidth;       
+  const windowHeight = window.innerHeight;   
+
+  let left = event.pageX;
+  let top = event.pageY;
+
+   if (event.clientX + mainMenueWidth > windowWidth) {
+        left = event.pageX - mainMenueWidth;
+    }
+  if (event.clientY + mainMenueHeight > windowHeight) {
+      top = event.pageY - mainMenueHeight;
+  }
+  menueNakami.style.top = top  + 'px'; 
+  menueNakami.style.left =left + 'px';
+
+  mainMenue.style.display = "block";
+}
