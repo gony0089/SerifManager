@@ -227,22 +227,22 @@ html,body{
 }
 
 .dot {
-  display: block;        /* ブロック要素として扱う */
-  width: 4px;            /* 点の幅 */
-  height: 4px;           /* 点の高さ */
-  background-color: #5f6368; /* 点の色 */
-  border-radius: 50%;    /* 点を円にする */
-  margin: 2px 0;         /* 点と点の間に少し隙間をあける */
+  display: block;      
+  width: 4px;            
+  height: 4px;           
+  background-color: #5f6368; 
+  border-radius: 50%;    
+  margin: 2px 0;         
 }
 
 
 
 .a4-page{
   display: flex;
-  flex-direction: column;/*縦並び*/
-  justify-content: center;/*軸に対して中央、今回は垂直中央になる*/
-  align-items: center;/*交差軸に対して中央による、今回は垂直軸に対して水平の中央になる*/
-  
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
   margin-top:45px;
   min-width: 50%;
     
@@ -254,8 +254,8 @@ html,body{
   height: 175px;
    writing-mode: vertical-rl; /* 縦書き、右から左へ */
   -webkit-writing-mode: vertical-rl; /* Safari、Chrome用 */
-  border: none; /* テキストエリア自体の枠線を削除 */
-  padding: 10px 10px ; /* 上下左右に余白を追加 */
+  border: none; 
+  padding: 10px 10px ; 
   border-bottom: 1px solid rgb(153, 153, 153);
 }
 
@@ -264,7 +264,7 @@ html,body{
   display: flex;
   flex-direction: row;
   align-items: start;
-  width: 90%;
+  width: 100%;
   padding-bottom: 9px;
   max-width: 1000px;
 }
@@ -290,8 +290,8 @@ html,body{
   height: 175px;
   writing-mode: vertical-rl; /* 縦書き、右から左へ */
   -webkit-writing-mode: vertical-rl; /* Safari、Chrome用 */
-  border: none; /* テキストエリア自体の枠線を削除 */
-  padding:  10px 10px; /* 上下左右に余白を追加 */
+  border: none; 
+  padding:  10px 10px; 
   margin-left: 10px;
   font-size: 14px;
   border-left:1px dashed #ccc;
@@ -315,10 +315,10 @@ html,body{
 }
 
 .title-input {
-  display: block; /* ブロックレベル要素にする */
-  width: 80%;    /* 親要素の 80% の幅にする */
-  max-width: 600px; /* 最大幅を設定 */
-  margin: 70px auto 20px auto; /* 上下のマージンは 0、左右のマージンを auto にして中央寄せ */
+  display: block; 
+  width: 80%;    
+  max-width: 600px; 
+  margin: 70px auto 20px auto; 
   padding: 15px;
   font-size: 20px;
   border:none;
@@ -352,15 +352,15 @@ textarea{
 }
 
 #userIcon:hover {
-  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1);  /* ふわっとした円形の影 */
-  background-color: rgba(0, 0, 0, 0.05);     /* 軽い背景 */
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1);  
+  background-color: rgba(0, 0, 0, 0.05);    
 }
 
 
 /* --- モーダルウィンドウのスタイル --- */
 #fileModalOverlay {
-  display: none; /* 初期状態では非表示 */
-  position: fixed; /* 画面に固定 */
+  display: none; 
+  position: fixed; 
 
   top: 0;
   left: 0;
@@ -423,7 +423,6 @@ textarea{
 
 
 /*読み込みモーダル*/
-/* --- ファイル一覧モーダルのヘッダー --- */
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -486,7 +485,7 @@ textarea{
     background-color: #f0f0f0;
 }
 #driveFileListContainer.view-list .file-icon {
-    width: 24px; /* アイコンを小さめに */
+    width: 24px;
     height: 24px;
     margin-right: 15px;
     flex-shrink: 0;
@@ -507,12 +506,11 @@ textarea{
 
 
 /* --- グリッド表示用のスタイル --- */
-#driveFileListContainer.view-grid ul {/*これは鮮度100　idだけの指定だから*/
+#driveFileListContainer.view-grid ul {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
-    /* レスポンシブなグリッド：列の幅は最低120px、空きスペースを均等に埋める */
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 15px;
     padding: 20px 0;
@@ -529,12 +527,12 @@ textarea{
     border-radius: 8px;
     cursor: pointer;
     word-break: break-all;
-    transition: all 0.2s ease; /* ホバー時のアニメーションを追加 */
+    transition: all 0.2s ease; 
 }
 #driveFileListContainer.view-grid .drive-file-item:hover {
     background-color: #f0f0f0;
     border-color: #007bff;
-    transform: translateY(-2px); /* 少し浮き上がるようなエフェクト */
+    transform: translateY(-2px); 
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 #driveFileListContainer.view-grid .file-icon {
@@ -559,10 +557,7 @@ textarea{
     margin-top: 8px;
 }
 
-/* 読み込みモーダル専用のスタイル上書き */
-
-
-
+/* 読み込みモーダル */
 #loadModalOverlay {
   display: none;      
   position: fixed;    
@@ -572,8 +567,6 @@ textarea{
   height: 100%;        
   background-color: rgba(0, 0, 0, 0.6);
   z-index: 2000;
-
-  /* ★★★この3つが中央寄せの「三種の神器」です★★★ */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -621,7 +614,7 @@ textarea{
   padding: 10px 15px;
   font-size: 14px;
   color: #333;
-  transition: background-color 0.15s ease; /* ホバー時のアニメーション */
+  transition: background-color 0.15s ease; 
 }
 
 /* マウスが乗った時のスタイル */
@@ -631,7 +624,7 @@ textarea{
 
 .context-menu-icon {
   margin-right: 10px;
-  width: 20px; /* アイコンの幅を揃える */
+  width: 20px; 
   text-align: center;
 }
 
@@ -643,7 +636,7 @@ textarea{
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
-  z-index: 9999; /* どの要素よりも手前に表示する */
+  z-index: 9999; 
 
   /* 中身を中央に配置するための設定 */
   
