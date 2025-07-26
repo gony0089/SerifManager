@@ -102,21 +102,17 @@ addButton.addEventListener('click', () => {
 });
 
 
-//読み込み機能
+//読み込みファイル一覧表示
 loadButton.addEventListener('click', () => {
      const isLoggedIn = checkUserLoginStatus(); 
-
-    // 2. もしログインしていなければ、ここで処理を完全に止める
     if (!isLoggedIn) {
         alert("ファイルを読み込むには、まずGoogleにログインしてください。");
-        return; // ← returnで、これ以降の処理は実行されない
+        return; 
     }
-
-    // 1. 新しいファイル一覧モーダルを表示する
     if (loadModalOverlay) {
         loadModalOverlay.style.display = 'flex';
     } else {
-        console.error('ファイル一覧モーダルが見つかりません。HTMLのIDを確認してください。');
+        console.error('ファイル一覧が見つかりません。HTMLのIDを確認してください。');
         return;
     }
     fetchAndDisplayDriveFiles(); 
@@ -127,7 +123,7 @@ if (loadModalCloseButton) {
         loadModalOverlay.style.display = 'none';
     });
 }
-// 新しいモーダル外クリックで閉じる処理も同様に追加
+
 if (loadModalOverlay) {
     loadModalOverlay.addEventListener('mousedown', (event) => {
         if (event.target === loadModalOverlay) {
@@ -135,9 +131,9 @@ if (loadModalOverlay) {
         }
     });
 }
-
+//読み込み機能step1
 async function fetchAndDisplayDriveFiles() {
-    driveFileListContainer.innerHTML = '<p>ファイルを読み込み中です...</p>'; // ローディング表示
+    driveFileListContainer.innerHTML = '<p>ファイルを読み込み中です...</p>'; 
     try {
       if (!gapi.client.drive || !appFolderId) { 
             console.error('Drive APIの準備ができていないか、アプリ専用フォルダIDがありません。');
@@ -147,7 +143,6 @@ async function fetchAndDisplayDriveFiles() {
         }
 
         const response = await gapi.client.drive.files.list({
-            // q: `'${appFolderId}' in parents and trashed=false and mimeType='application/json'`, // アプリ専用フォルダ内のJSONファイルのみ
             q: `'${appFolderId}' in parents and trashed=false`, // まずはアプリ専用フォルダ内のすべてのファイル
             fields: 'files(id, name, modifiedTime, iconLink)', // 取得するファイル情報 (ID, 名前, 更新日時)
             orderBy: 'modifiedTime desc' // 更新日時が新しい順で並べる
@@ -159,7 +154,7 @@ async function fetchAndDisplayDriveFiles() {
         if (files && files.length > 0) {
             // ファイルが見つかった場合、リストとして表示する
             const ul = document.createElement('ul');
-            ul.style.listStyleType = 'none'; // リストの点を消す
+            ul.style.listStyleType = 'none'; 
             ul.style.padding = '0';
             ul.style.margin = '0';
 
@@ -172,7 +167,7 @@ async function fetchAndDisplayDriveFiles() {
            }
 
                  li.className = 'drive-file-item'; // CSSでスタイルを当てるための共通クラス
-                // グリッド表示用に、ファイルアイコンとファイル名のコンテナを作る
+                // グリッド表示用のファイルアイコンとファイル名のコンテナ
                 li.innerHTML = `
                       <img src="${highResIconLink}" alt="file icon" class="file-icon" onerror="this.style.display='none'">
                       <span class="file-name" title="${file.name}">${file.name}</span>
@@ -180,21 +175,19 @@ async function fetchAndDisplayDriveFiles() {
                 `;
              
 
-                // ★★★ ファイルIDをdata属性としてHTML要素に保存しておく ★★★
+                // ファイルID・ファイル名をdata属性と紐づけ
                 li.dataset.fileId = file.id; 
-                li.dataset.fileName = file.name; // ファイル名も一緒に保存しておくと後で便利
+                li.dataset.fileName = file.name; 
 
-                // ファイルアイテムがクリックされた時の処理 (次のステップで中身を読み込む)
+                // ファイルアイテムがクリックされた時の処理 
                 li.addEventListener('dblclick', () => {
                     const selectedFileId = li.dataset.fileId;
                     const selectedFileName = li.dataset.fileName;
                     
-                    // モーダルを閉じる
+                    
                     if (loadModalOverlay) {
                         loadModalOverlay.style.display = 'none';
                     }
-                    
-                    // ★次のステップで実装する関数を呼び出す★
                     loadFileContent(selectedFileId, selectedFileName); 
                 });
                 ul.appendChild(li);
@@ -214,10 +207,9 @@ async function fetchAndDisplayDriveFiles() {
 }
 
 
-
+//読み込み機能step2
 async function loadFileContent(fileId, fileName) {
 
-  
     editingFileNameSpan.textContent = `『${fileName}』を読み込み中...`; 
     
 
@@ -226,8 +218,6 @@ async function loadFileContent(fileId, fileName) {
       loadingOverlay.style.display = 'flex';
 
         await new Promise(resolve => setTimeout(resolve, 1500)); 
-        
-        // 1. Google Drive APIを使ってファイルの中身を取得
         const response = await gapi.client.drive.files.get({
             fileId: fileId,
             alt: 'media' // ファイルの中身そのものを取得する指定
@@ -235,7 +225,7 @@ async function loadFileContent(fileId, fileName) {
 
         loadingStatusText.textContent = "読み込みが完了しました！";
         
-        // response.body にJSON文字列としてファイルの中身が入っています
+        // response.body にJSON文字列としてファイルの中身が入ってる
         const fileContentString = response.body;
 
         // JSON文字列をJavaScriptのオブジェクトに変換
@@ -245,16 +235,14 @@ async function loadFileContent(fileId, fileName) {
         // 2. 作品タイトルを画面の入力欄に設定
         const titleInputElement = document.getElementById('titleInput');
         if (titleInputElement) {
-            titleInputElement.value = loadedData.title || ''; // もしtitleがなければ空文字
+            titleInputElement.value =loadedData.title||''; 
         }
         
          const existingVerticalBlocks = a4Page.querySelectorAll('.vertical-block');
         existingVerticalBlocks.forEach(block => {
-            block.remove(); // 各ブロックをDOMから削除
+            block.remove(); 
         });
         
-
-
         // 読み込んだデータに基づいて新しいページブロックを生成
         if (loadedData.pages && loadedData.pages.length > 0) {
             loadedData.pages.forEach((pageData, index) => {
@@ -269,7 +257,6 @@ async function loadFileContent(fileId, fileName) {
                 a4Page.appendChild(newVerticalBlock);
             });
         } else {
-            // 読み込んだデータにページがない場合（または空のページ配列の場合）
             // 最低1つの空のブロックを表示する
             const newVerticalBlock = document.createElement('div');
             newVerticalBlock.classList.add('vertical-block');
@@ -284,13 +271,13 @@ async function loadFileContent(fileId, fileName) {
 
         // 4. 現在のファイルIDを更新
         currentFileId = fileId;
-        // ブラウザのタブのタイトルも、読み込んだファイル名（またはJSON内のタイトル）に更新
-        document.title = `${loadedData.title || fileName} - A4縦書き15文字メモ`; 
+        
+        document.title = `${fileName} - SerifManager`;
 
         // 5. 上書きボタンの状態を更新
         updateOverwriteButtonStatus();
 
-        editingFileNameSpan.textContent = `『${loadedData.title || fileName}』編集中`;
+        editingFileNameSpan.textContent = `『${fileName}』編集中`;
 
     } catch (error) {
         console.error(`ファイルID ${fileId} の読み込み中にエラー:`, error);
@@ -303,10 +290,10 @@ async function loadFileContent(fileId, fileName) {
 
 
 
-//上書き機能判別式
+//上書きボタンの使用可否
 function updateOverwriteButtonStatus() {
-    const uwagakiDiv = document.getElementById('Uwagakisave'); // 親のdivを取得
-    const uwagakiButton = uwagakiDiv.querySelector('button'); // 中のbuttonを取得
+    const uwagakiDiv = document.getElementById('Uwagakisave'); 
+    const uwagakiButton = uwagakiDiv.querySelector('button'); 
     const accessToken = gapi.client.getToken();
     
     if(accessToken && accessToken.access_token && currentFileId){
@@ -316,8 +303,7 @@ function updateOverwriteButtonStatus() {
     }
 }
 
-// 上書き保存の修正版
-
+// 上書き保存
 uwagakisaveButton.addEventListener('click', async () => {
 
     if (!currentFileId) {
@@ -343,13 +329,13 @@ uwagakisaveButton.addEventListener('click', async () => {
     const fileDataObject = { title: title, pages: pagesData };
     const jsonString = JSON.stringify(fileDataObject, null, 2);
     const fullText = editingFileNameSpan.textContent; 
-    const fileName = fullText.replace('『', '').replace('』編集中', '');
+    const fileName = fullText.replace('『', '').replace('』編集中', '');//ココ修正あとでする。
 
     try {
         loadingStatusText.textContent = `『${fileName}』を上書き中...`;
         loadingOverlay.style.display = 'flex';
         
-        // ★修正: より明示的なヘッダー指定
+        
         const response = await gapi.client.request({
             'path': `https://www.googleapis.com/upload/drive/v3/files/${currentFileId}`,
             'method': 'PATCH',
@@ -359,25 +345,6 @@ uwagakisaveButton.addEventListener('click', async () => {
             },
             'body': jsonString
         });
-
-        
-        // ★修正: 上書き後も内容確認
-        await new Promise(resolve => setTimeout(resolve, 1500));
-
-        // 上書き後の内容確認
-        try {
-            const verifyResponse = await gapi.client.drive.files.get({
-                fileId: currentFileId,
-                alt: 'media'
-            });
-            if (verifyResponse.body === "") {
-                console.error("警告: 上書き後でもファイルの中身が空です！");
-            } else {
-            }
-        } catch (verifyError) {
-            console.error("上書き後の確認エラー:", verifyError);
-        }
-        
     } catch (error) {
         alert("ファイルの上書き保存に失敗しました。コンソールを確認してください。")
     }finally{
@@ -390,12 +357,12 @@ function openSaveModal(){
   const titleInput =document.getElementById('titleInput')
   const defaultFileName = titleInput.value.trim() !== "" ? titleInput.value.trim() : "untitled"; // 作品タイトルが空なら"untitled"に
 
-  modalTitle.textContent = "新規/別名ファイル名を入力"; // タイトルをファイル名入力用に
-  fileNameInput.style.display = 'block'; // ファイル名入力欄を表示する
-  fileNameInput.value = defaultFileName; // 作品タイトルを初期値としてセット！
-  modalActionButton.textContent = "保存"; // ボタンのテキストを「保存」に
-  modalActionButton.style.display = 'block'; // 保存ボタンを表示する
-  modalMessage.style.display = 'none'; // メッセージは非表示にする
+  modalTitle.textContent = "新規/別名ファイル名を入力"; 
+  fileNameInput.style.display = 'block'; 
+  fileNameInput.value = defaultFileName; 
+  modalActionButton.textContent = "保存"; 
+  modalActionButton.style.display = 'block'; 
+  modalMessage.style.display = 'none'; 
 
     const newActionButton = modalActionButton.cloneNode(true);
     modalActionButton.parentNode.replaceChild(newActionButton, modalActionButton);
@@ -412,7 +379,7 @@ function openSaveModal(){
         await savesystem(fileNameFromModal);
       });
 
-  showFileModal(); // モーダルを表示！
+  showFileModal(); 
 
 };
 
@@ -422,7 +389,7 @@ saveButton.addEventListener('click',async ()=>{
   const isLogedIn = checkUserLoginStatus();
   const isSwitchOn = driveConnectSwitch.checked;
 
-  //一番うまくいった場合。ログインかつ許可あり
+  //ログインかつtokenあり
   if(accessToken && accessToken.access_token){
    openSaveModal();
   return;
@@ -445,12 +412,12 @@ saveButton.addEventListener('click',async ()=>{
 
     modalTitle.textContent='Google Driveと連携されていません';
     modalMessage.textContent='保存機能を利用するには、GoogleDrive連携ボタンをオンにてください';
-    fileNameInput.style.display = 'none';      // ファイル名入力欄は隠す
-    modalActionButton.style.display = 'none';  // アクションボタンも隠す
-    modalMessage.style.display = 'block';      // メッセージ欄を表示する
+    fileNameInput.style.display = 'none';     
+    modalActionButton.style.display = 'none';  
+    modalMessage.style.display = 'block';     
 
-    showFileModal(); // モーダルを表示
-    return; // これ以降の処理は不要なので、ここで抜ける
+    showFileModal(); 
+    return; 
     }
     //ログイン済み　tokenなし　トグルオン
     else{
@@ -458,12 +425,11 @@ saveButton.addEventListener('click',async ()=>{
       modalTitle.textContent = "Google Driveと連携されていません";
       modalMessage.textContent = "右上のGoogleDrive連携ボタンを一度オフにしてから、再度オンにして連携を許可してください！";
         
-      fileNameInput.style.display = 'none';      // ファイル名入力欄は隠す
-      modalActionButton.style.display = 'none';  // アクションボタンも隠す
-      modalMessage.style.display = 'block';      // メッセージ欄を表示する
+      fileNameInput.style.display = 'none';      
+      modalActionButton.style.display = 'none';  
+      modalMessage.style.display = 'block';      
 
-      showFileModal(); // モーダルを表示
-    
+      showFileModal(); 
     }
 
   
@@ -481,7 +447,6 @@ function checkUserLoginStatus() {
 
 
 // savesystem関数の修正版 - タイミング問題を解決
-
 async function savesystem(fileNameFromModal) {
 
     const titleInput = document.getElementById('titleInput')
@@ -490,7 +455,7 @@ async function savesystem(fileNameFromModal) {
 
     const pagesData = [];
 
-    verticalBlocks.forEach((verticalBlock, index) => {
+    verticalBlocks.forEach((verticalBlock) => {
         const serifTextarea = verticalBlock.querySelector('.vertical-text');
         const sceneTextarea = verticalBlock.querySelector('.title-text');
         const serif = serifTextarea.value;
@@ -499,12 +464,12 @@ async function savesystem(fileNameFromModal) {
         pagesData.push(pageData)
     });
 
-    const fileDataObject = { title: fileNameFromModal, pages: pagesData };
+    const fileDataObject = { title: title, pages: pagesData };
 
     const jsonString = JSON.stringify(fileDataObject, null, 2);
 
     if (!appFolderId) {
-        console.error("アプリ専用フォルダのidが利用できません。フォルダの準備ができていない可能性あり");
+        console.error("アプリ専用フォルダのidが利用できません。フォルダの準備ができていない可能性があります");
         alert("ファイルの保存に失敗。フォルダの準備ができていません。");
         return;
     }
@@ -530,8 +495,8 @@ async function savesystem(fileNameFromModal) {
 
 
         const request = await gapi.client.request({
-            'path': 'https://www.googleapis.com/upload/drive/v3/files',//ファイル作成のエンドポイント
-            'method': 'POST',//新規作成って意味です
+            'path': 'https://www.googleapis.com/upload/drive/v3/files',
+            'method': 'POST',
             'params': { 'uploadType': 'multipart' },
             'headers': {
                 'Content-Type': 'multipart/related; boundary="' + boundary + '"'
@@ -539,29 +504,8 @@ async function savesystem(fileNameFromModal) {
             'body': multipartRequestBody
         });
 
-
         currentFileId = request.result.id;
-
-        // ★修正2: 保存後に少し待ってから確認
-        await new Promise(resolve => setTimeout(resolve, 3000));
-
-        // ★修正3: 保存直後にファイル内容を確認（デバッグ用）
-        try {
-            const verifyResponse = await gapi.client.drive.files.get({
-                fileId: currentFileId,
-                alt: 'media'
-            });
-            if (verifyResponse.body === "") {
-                console.error("警告: 保存直後でもファイルの中身が空です！");
-            } else {
-            }
-        } catch (verifyError) {
-            console.error("保存直後の確認エラー:", verifyError);
-        }
-
         updateOverwriteButtonStatus();
-        
-
     } catch (error) {
         console.error("ファイル保存中にエラーが発生しました:", error);
         alert('ファイルの保存に失敗しました。コンソール確認してね。');
@@ -579,7 +523,6 @@ removeButton.addEventListener('click', () => {
     a4Page.removeChild(verticalBlocks[verticalBlocks.length - 1]);
   }
 });
-
 function decodeJwtPayload(token) {
   const base64Url = token.split('.')[1];
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -602,9 +545,9 @@ function GoogleCredentialResponse(response) {
   const userIcon = document.getElementById("userIcon");
   userIcon.innerHTML = `<img src="${payload.picture}" alt="User Icon" style="width: 32px; height: 32px; border-radius: 50%;">`;
   userIcon.style.display ="block";
- //ここでトグルを表示
+ 
   togleContainer.style.display='flex';
- //driveへのアクセス許可
+ 
   if(tokenClient){
     tokenClient.requestAccessToken({ prompt: '' }); 
   }else{
@@ -625,14 +568,14 @@ document.getElementById("userIcon").addEventListener("click", () => {
   }
 });
 
- // アプリ専用フォルダを検索または作成する関数
+// アプリ専用フォルダを検索または作成する関数
 async function ensureAppFolder() {
 
     try {
         // 1. フォルダを検索する
         const response = await gapi.client.drive.files.list({
-            pageSize: 1, // 1件見つかれば十分
-            fields: 'files(id)', // IDだけ取得
+            pageSize: 1, 
+            fields: 'files(id)', 
             q: `name='${APP_FOLDER_NAME}' and mimeType='application/vnd.google-apps.folder' and trashed=false`, // 名前とフォルダタイプで検索、ゴミ箱にないもの
         });
 
@@ -689,8 +632,6 @@ async function ensureAppFolder() {
     }
     updateOverwriteButtonStatus();//上書きがオンになる
   }
-
-//gapiが読み込まれたら
 function handleGapiLoad(){
   gapi.load('client', function(){
      
@@ -708,11 +649,9 @@ function gisLoaded(){
 
              
               try {
-                // GAPIクライアントの初期化が完了するのを待つ
                 if (gapiInitPromise) {
                     await gapiInitPromise;
                 } else {
-                    // 通常このエラーは発生しないはずですが、念のため
                     throw new Error('GAPIの初期化プロセスが開始されていません。');
                 }
 
@@ -728,7 +667,6 @@ function gisLoaded(){
               } catch (error) {
                   console.error("GAPIの準備待機中、または連携処理中にエラーが発生しました:", error);
                   alert("Google Driveとの連携に失敗しました。ページを再読み込みしてお試しください。");
-                  // エラーが発生した場合のUIフォールバック
                   if(driveConnectSwitch) driveConnectSwitch.checked = false;
                   updateFileOperationButtons(false);
               }
@@ -877,6 +815,7 @@ async function updateFileName(fileId,newFileName){
     if(listItem){
       const fileNameSpan = listItem.querySelector('.file-name');
       fileNameSpan.textContent = newFileName;
+      listItem.dataset.fileName = newFileName;
     }
     alert('ファイル名を変更しました。');
   }catch(error){
@@ -969,6 +908,7 @@ restoreFromAutoSave();
 //読み込み時の操作ボタンオフ
 updateFileOperationButtons(false);
 
+//操作バー三点ボタン
 const mainMenue =document.getElementById("mainmenue");
  OptionButton.addEventListener('click',(event)=>{
   showMainMenu(event);
