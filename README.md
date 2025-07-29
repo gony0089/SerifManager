@@ -27,4 +27,4 @@ UIは直感的に操作できるように設計しており、万が一エラー
 ネイティブアプリ化により、PC（Web版）とスマートフォン（iOS版）で同じGoogle Drive上のデータを共有でき、デバイスを問わないシームレスな執筆体験を実現します。
 
 
-アプリ→https://gony0089.github.io/SerifManager/
+アプリ→https://serifmanager.com/
